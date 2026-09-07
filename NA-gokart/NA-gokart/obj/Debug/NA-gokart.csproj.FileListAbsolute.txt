@@ -1,0 +1,7 @@
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\bin\Debug\NA-gokart.exe.config
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\bin\Debug\NA-gokart.exe
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\bin\Debug\NA-gokart.pdb
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\obj\Debug\NA-gokart.csproj.AssemblyReference.cache
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\obj\Debug\NA-gokart.csproj.CoreCompileInputs.cache
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\obj\Debug\NA-gokart.exe
+C:\Users\NagyAdam\Documents\GitHub\NA-gokart\NA-gokart\NA-gokart\obj\Debug\NA-gokart.pdb

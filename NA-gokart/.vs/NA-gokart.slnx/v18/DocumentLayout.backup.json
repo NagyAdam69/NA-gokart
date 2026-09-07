@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8C0A380D-61D1-4B24-8B39-CDC013F08654}|NA-gokart\\NA-gokart.csproj|c:\\users\\nagyadam\\documents\\github\\na-gokart\\na-gokart\\na-gokart\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8C0A380D-61D1-4B24-8B39-CDC013F08654}|NA-gokart\\NA-gokart.csproj|solutionrelative:na-gokart\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\keresztnevek.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:NA-gokart\\bin\\Debug\\keresztnevek.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\vezeteknevek.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:NA-gokart\\bin\\Debug\\vezeteknevek.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "vezeteknevek.txt",
+              "DocumentMoniker": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\vezeteknevek.txt",
+              "RelativeDocumentMoniker": "NA-gokart\\bin\\Debug\\vezeteknevek.txt",
+              "ToolTip": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\vezeteknevek.txt",
+              "RelativeToolTip": "NA-gokart\\bin\\Debug\\vezeteknevek.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-09-07T06:52:05.5Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "keresztnevek.txt",
+              "DocumentMoniker": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\keresztnevek.txt",
+              "RelativeDocumentMoniker": "NA-gokart\\bin\\Debug\\keresztnevek.txt",
+              "ToolTip": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\bin\\Debug\\keresztnevek.txt",
+              "RelativeToolTip": "NA-gokart\\bin\\Debug\\keresztnevek.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAABzBgAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-09-07T06:51:56.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\Program.cs",
+              "RelativeDocumentMoniker": "NA-gokart\\Program.cs",
+              "ToolTip": "C:\\Users\\NagyAdam\\Documents\\GitHub\\NA-gokart\\NA-gokart\\NA-gokart\\Program.cs",
+              "RelativeToolTip": "NA-gokart\\Program.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEUAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-07T06:25:16.743Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
