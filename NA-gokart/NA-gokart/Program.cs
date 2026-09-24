@@ -67,7 +67,7 @@ namespace NA_gokart
             }
             Console.WriteLine("\nVERSENYZŐK:\n");
 
-            string leghosszabb_nev = "laci";
+            string leghosszabb_nev = "kis tas";
 
             for (int i = 0; i < versenyzok.Count; i++)
             {
@@ -140,7 +140,7 @@ namespace NA_gokart
                     }
 
                     // Cella tartalma (szóközökkel kitöltve)
-                    Console.Write(" ".PadRight(timeColWidth - 1));
+                    Console.Write(" 0/20".PadRight(timeColWidth - 1));
 
                     // Elválasztó függőleges vonal visszaállított színekkel
                     Console.ResetColor();
@@ -150,12 +150,24 @@ namespace NA_gokart
                 Console.WriteLine();
             }
         }
+        static void Kiiras(List<Versenyzok> versenyzok, string uzenet)
+        {
+            Console.Clear();
+            Console.WriteLine("\x1b[3J");
+            VersenyzokListazas(versenyzok);
+            Tablazat();
+            Console.WriteLine($"\n{uzenet}");
+                
+        }
+        
         static void Main(string[] args)
         {
             /*
              NA- Gokart időpontfoglaló - Egyéni kisprojekt
              2026.09.07
              */
+
+            DateTime ma = DateTime.Now;
 
             string go_nev = "NagyiCart";
             string go_cim = "6969 Taktaharkány, Gáspár utca 12.";
@@ -172,9 +184,6 @@ namespace NA_gokart
             StreamReader stre = new StreamReader("keresztnevek.txt");
             string sor2 = stre.ReadLine().Replace(" ", "").Replace("'", "");
             string[] keresztnevek = sor2.Split(',');
-
-            string ekezetes_karakterek = "áéíóöőúüűÁÉÍÓÖŐÚÜŰ";
-            string ekezet_nelkuli_karakterek = "aeiooouuuAEIOOOUUU";
 
 
             Random gen = new Random();
@@ -204,51 +213,28 @@ namespace NA_gokart
 
             while (true)
             {
-                Console.Clear();
-                VersenyzokListazas(versenyzok);
-                Tablazat();
-                Console.WriteLine();
-                Console.WriteLine(uzenet);
+                Kiiras(versenyzok, uzenet);
                 uzenet = "";
 
                 Console.Write("Válasszon opciót: \n-(1) Foglalás hozzáadása\n-(2) Foglalás módosítása \n-(3) Kilépés\n:");
                 string valasztas = Console.ReadLine();
                 if (valasztas == "1")
                 {
-                    Console.Clear();
-                    VersenyzokListazas(versenyzok);
-                    Tablazat();
-                    Console.WriteLine();
-                    Console.WriteLine(uzenet);
+                    Kiiras(versenyzok, uzenet);
 
-                    Console.Write($"Hanyadikára szeretné foglalni? ({DateTime.Now.Day} - {DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)}): ");
-                    int nap = Convert.ToInt32(Console.ReadLine());
+                    Console.Write($"Melyik időpontra szeretne foglalni? (nap/óra; pl. 30/9): ");
+                    int nap = Convert.ToInt32(Console.ReadLine().Split('/')[0]);
+                    int ora = Convert.ToInt32(Console.ReadLine().Split('/')[1]);
 
-                    if (nap < DateTime.Now.Day || nap > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
+
+                    if (nap < DateTime.Now.Day || nap > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) || ora < 8 || ora > 18)
                     {
                         uzenet = "Nincs ilyen opció!";
                         continue;
                     }
 
-                    Console.Clear();
-                    VersenyzokListazas(versenyzok);
-                    Tablazat();
-                    Console.WriteLine();
-                    Console.WriteLine();
 
-                    Console.Write("Melyik órára szeretne foglalni? (8-18): ");
-                    int ora = Convert.ToInt32(Console.ReadLine());
-
-                    if (ora < 8 || ora > 18)
-                    {
-                        uzenet = "Nincs ilyen opció!";
-                        continue;
-                    }
-
-                    Console.Clear();
-                    VersenyzokListazas(versenyzok);
-                    Tablazat();
-                    Console.WriteLine();
+                    Kiiras(versenyzok, uzenet);
                     Console.WriteLine($"({nap}-án, {ora}. órakor)");
 
                     Console.Write("Hányas számú versenyzőt szeretné foglalni? (1-{0}): ", versenyzok.Count);
@@ -261,9 +247,34 @@ namespace NA_gokart
                     }
 
                     Idopontok uj_foglalas = new Idopontok(new DateTime(DateTime.Now.Year, DateTime.Now.Month, nap), ora, versenyzok[sorszam - 1].versenyzo_id);
+                    idopontok.Add(uj_foglalas);
                     uzenet = $"Sikeres foglalás: {uj_foglalas.datum:yyyy.MM.dd} - {uj_foglalas.idopont}:00 - {uj_foglalas.foglalo_id}";
-                }
 
+                }
+                if (valasztas == "2")
+                {
+                    Kiiras(versenyzok, uzenet);
+                    Console.Write("Keresés időpont alapján (nap/óra; pl 30/9): ");
+                    string idopont = Console.ReadLine();
+                    var keresett_idopontok = idopontok.Where(d => d.datum == new DateTime(ma.Year, ma.Month, Convert.ToInt32(idopont.Split('/')[0])) && d.idopont == Convert.ToInt32(idopont.Split('/')[1]));
+
+                    Kiiras(versenyzok, uzenet);
+                    Console.WriteLine($"Időpntok: {new DateTime(ma.Year, ma.Month, Convert.ToInt32(idopont.Split('/')[0])):yyyy.MM.dd} - {Convert.ToInt32(idopont.Split('/')[1])}:00");
+                    bool van_idopont = false;
+                    foreach (var item in keresett_idopontok)
+                    {
+                        Console.WriteLine($"{item.foglalo_id}");
+                        van_idopont = true;
+                    }
+                    if (!van_idopont)
+                    {
+                        Console.WriteLine("Még nincs ehhez az időponthoz foglalás.");
+                        Console.Write("ENTER a folytatáshoz");
+                        Console.ReadLine();
+                        continue;
+                    }
+                    Console.ReadLine();
+                }
                 
             }
         }
