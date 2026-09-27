@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -223,8 +224,9 @@ namespace NA_gokart
                     Kiiras(versenyzok, uzenet);
 
                     Console.Write($"Melyik időpontra szeretne foglalni? (nap/óra; pl. 30/9): ");
-                    int nap = Convert.ToInt32(Console.ReadLine().Split('/')[0]);
-                    int ora = Convert.ToInt32(Console.ReadLine().Split('/')[1]);
+                    string valasz = Console.ReadLine();
+                    int nap = Convert.ToInt32(valasz.Split('/')[0]);
+                    int ora = Convert.ToInt32(valasz.Split('/')[1]);
 
 
                     if (nap < DateTime.Now.Day || nap > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) || ora < 8 || ora > 18)
@@ -255,15 +257,23 @@ namespace NA_gokart
                 {
                     Kiiras(versenyzok, uzenet);
                     Console.Write("Keresés időpont alapján (nap/óra; pl 30/9): ");
-                    string idopont = Console.ReadLine();
-                    var keresett_idopontok = idopontok.Where(d => d.datum == new DateTime(ma.Year, ma.Month, Convert.ToInt32(idopont.Split('/')[0])) && d.idopont == Convert.ToInt32(idopont.Split('/')[1]));
+
+                    var reszek = Console.ReadLine().Split('/');
+                    int nap = Convert.ToInt32(reszek[0]);
+                    int ora = Convert.ToInt32(reszek[1]);
+                    var keresett_idopontok = idopontok.Where(d => d.datum == new DateTime(ma.Year, ma.Month, nap) && d.idopont == ora);
 
                     Kiiras(versenyzok, uzenet);
-                    Console.WriteLine($"Időpntok: {new DateTime(ma.Year, ma.Month, Convert.ToInt32(idopont.Split('/')[0])):yyyy.MM.dd} - {Convert.ToInt32(idopont.Split('/')[1])}:00");
+                    Console.WriteLine($"Időpntok: {new DateTime(ma.Year, ma.Month, nap):yyyy.MM.dd} - {ora}:00");
                     bool van_idopont = false;
-                    foreach (var item in keresett_idopontok)
+
+                    var keresett_idk = keresett_idopontok.Select(i => i.foglalo_id);
+                    List<Versenyzok> keresett_versenyzok = versenyzok.Where(v => keresett_idk.Contains(v.versenyzo_id)).ToList();
+                    for (int i = 0; i < keresett_versenyzok.Count; i++)
                     {
-                        Console.WriteLine($"{item.foglalo_id}");
+                        string teljes_nev = $"{keresett_versenyzok[i].vezeteknev} {keresett_versenyzok[i].keresztnev}".PadRight(20);
+                        Console.Write($"{i + 1}.".PadRight(3));
+                        Console.WriteLine($"{teljes_nev} -     {keresett_versenyzok[i].versenyzo_id}");
                         van_idopont = true;
                     }
                     if (!van_idopont)
@@ -273,7 +283,8 @@ namespace NA_gokart
                         Console.ReadLine();
                         continue;
                     }
-                    Console.ReadLine();
+
+                    Console.Write("Válasszon egy opciót: \n-Időpont törlése (1)\n-Időpont megváltoztatása (2)");
                 }
                 
             }
