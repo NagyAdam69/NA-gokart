@@ -42,7 +42,6 @@ namespace NA_gokart
             }
         }
 
-
         static string EkezetMentesito(string stoveg)
         {
             string ekezetes_karakterek = "áéíóöőúüűÁÉÍÓÖŐÚÜŰ";
@@ -86,10 +85,10 @@ namespace NA_gokart
                 Console.Write(versenyzo.PadRight(leghosszabb_nev.Length + 2));
                 Console.Write($"-({versenyzok[i].szuletesi_ido:yyyy.MM.dd})-");
                 Console.WriteLine($"  ID: {versenyzok[i].versenyzo_id}");
-
             }
         }
-        static void Tablazat()
+
+        static void Tablazat(List<Idopontok> idopontok)
         {
             DateTime today = DateTime.Today;
             int daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
@@ -108,7 +107,6 @@ namespace NA_gokart
             }
             Console.WriteLine();
 
-            // Fejléc alatti elválasztó vonal
             Console.Write(new string('─', dateColWidth) + "┼");
             for (int hour = startHour; hour <= endHour; hour++)
             {
@@ -116,7 +114,6 @@ namespace NA_gokart
             }
             Console.WriteLine();
 
-            // Sorok generálása a mai naptól a hónap végéig
             for (int day = today.Day; day <= daysInMonth; day++)
             {
                 DateTime currentDate = new DateTime(today.Year, today.Month, day);
@@ -125,11 +122,22 @@ namespace NA_gokart
                 Console.ResetColor();
                 Console.Write(currentDate.ToString("yyyy.MM.dd").PadRight(dateColWidth) + "│");
 
-                // Cellák kirajzolása váltakozó zöld háttérrel és elválasztó vonallal
                 for (int hour = startHour; hour <= endHour; hour++)
                 {
-                    // Sötétzöld és zöld cellák váltakozása a jobb láthatóságért
-                    if ((day + hour) % 2 == 0)
+                    int foglalasokSzama = idopontok.Count(x => x.datum == currentDate && x.idopont == hour);
+
+                    // Színezés: ha tele van (20 fő), piros background, egyébként váltakozó zöld
+                    if (foglalasokSzama >= 20 && (day + hour) % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if(foglalasokSzama >= 20)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                    }
+                    else if ((day + hour) % 2 == 0)
                     {
                         Console.BackgroundColor = ConsoleColor.DarkGreen;
                         Console.ForegroundColor = ConsoleColor.Black;
@@ -140,10 +148,8 @@ namespace NA_gokart
                         Console.ForegroundColor = ConsoleColor.Black;
                     }
 
-                    // Cella tartalma (szóközökkel kitöltve)
-                    Console.Write(" 0/20".PadRight(timeColWidth - 1));
+                    Console.Write($"{foglalasokSzama,2}/20".PadRight(timeColWidth - 1));
 
-                    // Elválasztó függőleges vonal visszaállított színekkel
                     Console.ResetColor();
                     Console.Write("│");
                 }
@@ -151,23 +157,18 @@ namespace NA_gokart
                 Console.WriteLine();
             }
         }
-        static void Kiiras(List<Versenyzok> versenyzok, string uzenet)
+
+        static void Kiiras(List<Versenyzok> versenyzok, List<Idopontok> idopontok, string uzenet)
         {
             Console.Clear();
             Console.WriteLine("\x1b[3J");
             VersenyzokListazas(versenyzok);
-            Tablazat();
+            Tablazat(idopontok);
             Console.WriteLine($"\n{uzenet}");
-                
         }
-        
+
         static void Main(string[] args)
         {
-            /*
-             NA- Gokart időpontfoglaló - Egyéni kisprojekt
-             2026.09.07
-             */
-
             DateTime ma = DateTime.Now;
 
             string go_nev = "NagyiCart";
@@ -186,7 +187,6 @@ namespace NA_gokart
             string sor2 = stre.ReadLine().Replace(" ", "").Replace("'", "");
             string[] keresztnevek = sor2.Split(',');
 
-
             Random gen = new Random();
             DateTime start = new DateTime(1966, 1, 1);
             int range = (new DateTime(2012, 1, 1) - start).Days;
@@ -204,30 +204,29 @@ namespace NA_gokart
                 }
                 string versenyzo_id = $"GO-{EkezetMentesito(vezeteknev)}{EkezetMentesito(keresztnev)}-{szuletesi_ido.Year}{szuletesi_ido.Month.ToString("00")}{szuletesi_ido.Day.ToString("00")}";
                 string email = $"{EkezetMentesito(vezeteknev.ToLower())}.{EkezetMentesito(keresztnev.ToLower())}@gmail.com";
-                
+
                 versenyzok.Add(new Versenyzok(vezeteknev, keresztnev, szuletesi_ido, nagykoru, versenyzo_id, email));
             }
-
 
             List<Idopontok> idopontok = new List<Idopontok>();
             string uzenet = "";
 
             while (true)
             {
-                Kiiras(versenyzok, uzenet);
+                Kiiras(versenyzok, idopontok, uzenet);
                 uzenet = "";
 
                 Console.Write("Válasszon opciót: \n-(1) Foglalás hozzáadása\n-(2) Foglalás módosítása \n-(3) Kilépés\n:");
                 string valasztas = Console.ReadLine();
+
                 if (valasztas == "1")
                 {
-                    Kiiras(versenyzok, uzenet);
+                    Kiiras(versenyzok, idopontok, uzenet);
 
                     Console.Write($"Melyik időpontra szeretne foglalni? (nap/óra; pl. 30/9): ");
                     string valasz = Console.ReadLine();
                     int nap = Convert.ToInt32(valasz.Split('/')[0]);
                     int ora = Convert.ToInt32(valasz.Split('/')[1]);
-
 
                     if (nap < DateTime.Now.Day || nap > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) || ora < 8 || ora > 18)
                     {
@@ -235,8 +234,14 @@ namespace NA_gokart
                         continue;
                     }
 
+                    DateTime targetDatum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, nap);
+                    if (idopontok.Count(i => i.datum == targetDatum && i.idopont == ora) >= 20)
+                    {
+                        uzenet = "Ez az időpont már betelt (elérte a maximális 20 főt)!";
+                        continue;
+                    }
 
-                    Kiiras(versenyzok, uzenet);
+                    Kiiras(versenyzok, idopontok, uzenet);
                     Console.WriteLine($"({nap}-án, {ora}. órakor)");
 
                     Console.Write("Hányas számú versenyzőt szeretné foglalni? (1-{0}): ", versenyzok.Count);
@@ -248,35 +253,51 @@ namespace NA_gokart
                         continue;
                     }
 
-                    Idopontok uj_foglalas = new Idopontok(new DateTime(DateTime.Now.Year, DateTime.Now.Month, nap), ora, versenyzok[sorszam - 1].versenyzo_id);
+                    string kivalasztottVersenyzoId = versenyzok[sorszam - 1].versenyzo_id;
+
+                    if (idopontok.Any(i => i.foglalo_id == kivalasztottVersenyzoId && i.datum == targetDatum && i.idopont == ora))
+                    {
+                        uzenet = "Ez a versenyző erre az időpontra már rendelkezik foglalással!";
+                        continue;
+                    }
+
+                    var versenyzoMaiFoglalásai = idopontok
+                        .Where(i => i.foglalo_id == kivalasztottVersenyzoId && i.datum == targetDatum)
+                        .Select(i => i.idopont)
+                        .ToList();
+
+                    if (versenyzoMaiFoglalásai.Count >= 2)
+                    {
+                        uzenet = "Ez a versenyző ezen a napon már elérte a maximális 2 foglalást!";
+                        continue;
+                    }
+
+                    if (versenyzoMaiFoglalásai.Count == 1 && Math.Abs(versenyzoMaiFoglalásai[0] - ora) != 1)
+                    {
+                        uzenet = $"A két foglalásnak egymást követő órában kell lennie! (Már meglévő foglalás: {versenyzoMaiFoglalásai[0]}:00)";
+                        continue;
+                    }
+
+                    Idopontok uj_foglalas = new Idopontok(targetDatum, ora, kivalasztottVersenyzoId);
                     idopontok.Add(uj_foglalas);
                     uzenet = $"Sikeres foglalás: {uj_foglalas.datum:yyyy.MM.dd} - {uj_foglalas.idopont}:00 - {uj_foglalas.foglalo_id}";
-
                 }
+
                 if (valasztas == "2")
                 {
-                    Kiiras(versenyzok, uzenet);
+                    Kiiras(versenyzok, idopontok, uzenet);
                     Console.Write("Keresés időpont alapján (nap/óra; pl 30/9): ");
 
                     var reszek = Console.ReadLine().Split('/');
                     int nap = Convert.ToInt32(reszek[0]);
                     int ora = Convert.ToInt32(reszek[1]);
-                    var keresett_idopontok = idopontok.Where(d => d.datum == new DateTime(ma.Year, ma.Month, nap) && d.idopont == ora);
 
-                    Kiiras(versenyzok, uzenet);
-                    Console.WriteLine($"Időpntok: {new DateTime(ma.Year, ma.Month, nap):yyyy.MM.dd} - {ora}:00");
-                    bool van_idopont = false;
+                    var keresett_idopontok = idopontok.Where(d => d.datum == new DateTime(ma.Year, ma.Month, nap) && d.idopont == ora).ToList();
 
-                    var keresett_idk = keresett_idopontok.Select(i => i.foglalo_id);
-                    List<Versenyzok> keresett_versenyzok = versenyzok.Where(v => keresett_idk.Contains(v.versenyzo_id)).ToList();
-                    for (int i = 0; i < keresett_versenyzok.Count; i++)
-                    {
-                        string teljes_nev = $"{keresett_versenyzok[i].vezeteknev} {keresett_versenyzok[i].keresztnev}".PadRight(20);
-                        Console.Write($"{i + 1}.".PadRight(3));
-                        Console.WriteLine($"{teljes_nev} -     {keresett_versenyzok[i].versenyzo_id}");
-                        van_idopont = true;
-                    }
-                    if (!van_idopont)
+                    Kiiras(versenyzok, idopontok, uzenet);
+                    Console.WriteLine($"Időpontok: {new DateTime(ma.Year, ma.Month, nap):yyyy.MM.dd} - {ora}:00");
+
+                    if (keresett_idopontok.Count == 0)
                     {
                         Console.WriteLine("Még nincs ehhez az időponthoz foglalás.");
                         Console.Write("ENTER a folytatáshoz");
@@ -284,9 +305,97 @@ namespace NA_gokart
                         continue;
                     }
 
-                    Console.Write("Válasszon egy opciót: \n-Időpont törlése (1)\n-Időpont megváltoztatása (2)");
+                    for (int i = 0; i < keresett_idopontok.Count; i++)
+                    {
+                        var foglalo = versenyzok.FirstOrDefault(v => v.versenyzo_id == keresett_idopontok[i].foglalo_id);
+                        string teljes_nev = foglalo != null ? $"{foglalo.vezeteknev} {foglalo.keresztnev}" : "Ismeretlen";
+                        Console.Write($"{i + 1}.".PadRight(3));
+                        Console.WriteLine($"{teljes_nev.PadRight(20)} -     {keresett_idopontok[i].foglalo_id}");
+                    }
+
+                    Console.Write("\nVálasszon egy opciót: \n-(1) Időpont törlése\n-(2) Időpont megváltoztatása\n:");
+                    string opcio = Console.ReadLine();
+
+                    if (opcio == "1")
+                    {
+                        Console.Write($"Hanyadik sorszámú versenyző foglalását szeretné törölni? (1-{keresett_idopontok.Count}): ");
+                        int sorszam = Convert.ToInt32(Console.ReadLine());
+
+                        if (sorszam >= 1 && sorszam <= keresett_idopontok.Count)
+                        {
+                            var torlendo = keresett_idopontok[sorszam - 1];
+                            idopontok.Remove(torlendo);
+                            uzenet = $"Sikeres törlés: {torlendo.foglalo_id} foglalása törölve lett.";
+                        }
+                        else
+                        {
+                            uzenet = "Nincs ilyen sorszámú foglalás!";
+                        }
+                    }
+                    else if (opcio == "2")
+                    {
+                        Console.Write($"Hanyadik sorszámú versenyző foglalását szeretné megváltoztatni? (1-{keresett_idopontok.Count}): ");
+                        int sorszam = Convert.ToInt32(Console.ReadLine());
+
+                        if (sorszam >= 1 && sorszam <= keresett_idopontok.Count)
+                        {
+                            var modositando = keresett_idopontok[sorszam - 1];
+
+                            Console.Write("Melyik új időpontra szeretné áthelyezni? (nap/óra; pl. 30/10): ");
+                            string ujValasz = Console.ReadLine();
+                            var ujReszek = ujValasz.Split('/');
+                            int ujNap = Convert.ToInt32(ujReszek[0]);
+                            int ujOra = Convert.ToInt32(ujReszek[1]);
+
+                            if (ujNap < DateTime.Now.Day || ujNap > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) || ujOra < 8 || ujOra > 18)
+                            {
+                                uzenet = "Érvénytelen új időpont!";
+                            }
+                            else
+                            {
+                                DateTime ujDatum = new DateTime(ma.Year, ma.Month, ujNap);
+
+                                if (idopontok.Count(i => i.datum == ujDatum && i.idopont == ujOra) >= 20)
+                                {
+                                    uzenet = "A választott új időpont már betelt (elérte a maximális 20 főt)!";
+                                }
+                                else
+                                {
+                                    var versenyzoUjNapiEgyebFoglalásai = idopontok
+                                        .Where(i => i != modositando && i.foglalo_id == modositando.foglalo_id && i.datum == ujDatum)
+                                        .Select(i => i.idopont)
+                                        .ToList();
+
+                                    if (versenyzoUjNapiEgyebFoglalásai.Count >= 2)
+                                    {
+                                        uzenet = "A versenyző ezen az új napon már elérte a maximális 2 foglalást!";
+                                    }
+                                    else if (versenyzoUjNapiEgyebFoglalásai.Count == 1 && Math.Abs(versenyzoUjNapiEgyebFoglalásai[0] - ujOra) != 1)
+                                    {
+                                        uzenet = $"A két foglalásnak egymást követő órában kell lennie! (Már meglévő foglalása ekkor: {versenyzoUjNapiEgyebFoglalásai[0]}:00)";
+                                    }
+                                    else
+                                    {
+                                        modositando.datum = ujDatum;
+                                        modositando.idopont = ujOra;
+                                        uzenet = $"Sikeres módosítás! Új időpont: {modositando.datum:yyyy.MM.dd} - {modositando.idopont}:00 ({modositando.foglalo_id})";
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            uzenet = "Nincs ilyen sorszámú foglalás!";
+                        }
+                    }
                 }
-                
+
+                if (valasztas == "3")
+                {
+                    Kiiras(versenyzok, idopontok, uzenet);
+                    Console.WriteLine("Program vége..");
+                    break;
+                }
             }
         }
     }
